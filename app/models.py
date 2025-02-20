@@ -1,0 +1,1 @@
+# Defines request/response schemas
