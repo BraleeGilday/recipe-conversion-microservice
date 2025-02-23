@@ -10,7 +10,7 @@
 #   invalid or incomplete ingredient data can be detected before processing and does not give me incorrect or
 #   unexpected results.
 
-from models import ConversionRequest
+from .models import ConversionRequest
 
 
 # Function to handle scaling and unit conversion
@@ -18,7 +18,7 @@ def process_conversion(request: ConversionRequest):
     updated_ingredients = []
 
     # Was a new serving size included?
-    if request.serving_size is True:
+    if request.serving_size is not None:
         for ingredient in request.ingredients:
             new_quantity = ingredient.quantity * request.serving_size
             updated_ingredients.append({
@@ -35,13 +35,13 @@ def process_conversion(request: ConversionRequest):
             })
 
     # Was a new measurement system included?
-    if request.system is True:
-        if request.system == 'customary':
+    if request.conversion_system is not None:
+        if request.conversion_system == 'customary':
             for ingredient in updated_ingredients:
                 ingredient["quantity"], ingredient["unit"] = conversion_to_customary(
                     ingredient["unit"], ingredient["quantity"]
                 )
-        elif request.system == 'metric':
+        elif request.conversion_system == 'metric':
             for ingredient in updated_ingredients:
                 ingredient["quantity"], ingredient["unit"] = conversion_to_metric(
                     ingredient["unit"], ingredient["quantity"]

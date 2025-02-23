@@ -2,11 +2,11 @@
 # Define FastAPI route & runs the server
 
 from fastapi import FastAPI
-from services import process_conversion, ConversionRequest
+from .services import process_conversion, ConversionRequest
 
-app = FastAPI()
+api = FastAPI()
 
 
-@app.post("/conversion")
+@api.post("/conversion")
 async def convert_ingredients(request: ConversionRequest):
     return process_conversion(request)

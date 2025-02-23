@@ -1,11 +1,14 @@
 from fastapi.testclient import TestClient
 
-from .main import app
-
+from .main import api
 
 # Adapted from https://fastapi.tiangolo.com/tutorial/testing/#testing-file
+client = TestClient(api)
 
-client = TestClient(app)
+
+def test_health_check():
+    response = client.post("/conversion", json={})
+    assert response.status_code == 422  # Unprocessable
 
 
 # Valid conversion request (scaling only)
@@ -26,7 +29,6 @@ def test_conversion_scaling():
         {"name": "sugar", "quantity": 300, "unit": "grams"}
     ]
 
-
 # Valid conversion request (unit conversion only)
 
 
@@ -40,4 +42,3 @@ def test_conversion_scaling():
 
 
 # Negative or zero quantities
-

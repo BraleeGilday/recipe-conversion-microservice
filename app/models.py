@@ -15,4 +15,4 @@ class Ingredient(BaseModel):
 class ConversionRequest(BaseModel):
     ingredients: List[Ingredient]
     serving_size: Optional[float] = None
-    conversion_unit: Optional[str] = None
+    conversion_system: Optional[str] = None
