@@ -10,27 +10,87 @@
 #   invalid or incomplete ingredient data can be detected before processing and does not give me incorrect or
 #   unexpected results.
 
-
-from typing import List, Optional
-from pydantic import BaseModel
-
-
-# Define the Ingredient model
-class Ingredient(BaseModel):
-    name: str
-    quantity: float
-    unit: str
-
-
-# Define the request model
-class ConversionRequest(BaseModel):
-    ingredients: List[Ingredient]
-    serving_size: Optional[float] = None
-    conversion_unit: Optional[str] = None
-
+from models import ConversionRequest
 
 # Function to handle scaling and unit conversion
-def process_conversion(request: ConversionRequest) -> List[dict]:
+def process_conversion(request: ConversionRequest):
     updated_ingredients = []
 
+    # Was a new serving size included?
+    if request.serving_size is True:
+        scale_factor = request.serving_size
+    else:
+        scale_factor = False
+
+    # Was a new measurement system included?
+    if request.system is True:
+
+#    for ingredient in request.ingredients:
+#        new_quantity = ingredient.quantity
+
+
     return updated_ingredients
+
+
+def conversion_to_customary(metric_unit, quantity):
+# WEIGHT
+    # gram to ounces
+    if metric_unit == 'grams' or metric_unit == 'gram':
+        converted_quantity = round((quantity * 0.0352739619), 2)
+        converted_unit = 'ounces'
+
+    # kilogram to pounds
+    elif metric_unit == 'kilograms' or metric_unit == 'kilogram':
+        converted_quantity = round((quantity * 2.2046226218), 1)
+        converted_unit = 'pounds'
+
+# LENGTH
+    # centimeter to inch
+    elif metric_unit == 'centimeters' or metric_unit == 'centimeter':
+        converted_quantity = round((quantity * 0.3937007874), 2)
+        converted_unit = 'inch'
+
+
+# TEMPERATURE
+    # celsius to fahrenheit
+    elif metric_unit == 'celsius' or metric_unit == '°C':
+        converted_quantity = round((quantity * (9/5) + 32), 1)
+        converted_unit = '°F'
+
+# VOLUME
+    # milliliter to
+    elif metric_unit == 'milliliters' or metric_unit == 'milliliter':
+        if quantity < 15:
+            converted_quantity = round((quantity * 0.2028841362), 2)
+            converted_unit = 'tsp'
+        elif quantity < 50:
+            converted_quantity = round((quantity * 0.0676280454), 2)
+            converted_unit = 'Tbsp'
+        elif quantity < 71:
+            converted_quantity = round((quantity * 0.0338140227), 2)
+            converted_unit = 'fl oz'
+        elif quantity < 1704:
+            converted_quantity = round((quantity * 0.003519508), 2)
+            converted_unit = 'cup'
+        else:
+            converted_quantity = round((quantity * 0.0021133764), 2)
+            converted_unit = 'pint'
+
+    # liter to
+    elif metric_unit == 'liters' or metric_unit == 'liter':
+        if quantity < .8:
+            converted_quantity = round((quantity * 4.2267528377), 2)
+            converted_unit = 'cup'
+        elif quantity < 4:
+            converted_quantity = round((quantity * 2.1133764189), 2)
+            converted_unit = 'pint'
+        else:
+            converted_quantity = round((quantity * 0.2641720524), 2)
+            converted_unit = 'gallon'
+
+    # Error
+    else:
+        converted_quantity = 0
+        converted_unit = 0
+
+    return converted_quantity, converted_unit
