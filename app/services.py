@@ -55,11 +55,11 @@ def conversion_to_customary(metric_unit, quantity):
     # gram to ounces
     if metric_unit == 'grams' or metric_unit == 'gram':
         converted_quantity = round((quantity * 0.0352739619), 2)
-        converted_unit = 'ounces'
+        converted_unit = 'ounce'
 
     # kilogram to pounds
     elif metric_unit == 'kilograms' or metric_unit == 'kilogram':
-        converted_quantity = round((quantity * 2.2046226218), 1)
+        converted_quantity = round((quantity * 2.2046226218), 2)
         converted_unit = 'lbs'
 
 # LENGTH
@@ -106,10 +106,10 @@ def conversion_to_customary(metric_unit, quantity):
             converted_quantity = round((quantity * 0.2641720524), 2)
             converted_unit = 'gallon'
 
-    # Error
+    # Don't convert; keep as is
     else:
-        converted_quantity = 0
-        converted_unit = 0
+        converted_quantity = quantity
+        converted_unit = metric_unit
 
     return converted_quantity, converted_unit
 
@@ -125,7 +125,7 @@ def conversion_to_metric(customary_unit, quantity):
     # pounds to kilograms
     elif customary_unit == 'pounds' or customary_unit == 'pound'\
             or customary_unit == 'lbs':
-        converted_quantity = round((quantity * 0.45359237), 1)
+        converted_quantity = round((quantity * 0.45359237), 2)
         converted_unit = 'kg'
 
 # LENGTH
@@ -181,9 +181,9 @@ def conversion_to_metric(customary_unit, quantity):
         converted_quantity = round(quantity * 3.785411784, 2)
         converted_unit = 'L'
 
-    # Error
+    # Don't convert; keep as is
     else:
-        converted_quantity = 0
-        converted_unit = 0
+        converted_quantity = quantity
+        converted_unit = customary_unit
 
     return converted_quantity, converted_unit

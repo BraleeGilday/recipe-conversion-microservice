@@ -8,7 +8,7 @@ from typing import List, Optional
 class Ingredient(BaseModel):
     name: str
     quantity: float
-    unit: str
+    unit: Optional[str] = None
 
 
 # Define the request model
