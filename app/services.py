@@ -12,22 +12,40 @@
 
 from models import ConversionRequest
 
+
 # Function to handle scaling and unit conversion
 def process_conversion(request: ConversionRequest):
     updated_ingredients = []
 
     # Was a new serving size included?
     if request.serving_size is True:
-        scale_factor = request.serving_size
+        for ingredient in request.ingredients:
+            new_quantity = ingredient.quantity * request.serving_size
+            updated_ingredients.append({
+                "name": ingredient.name,
+                "quantity": new_quantity,
+                "unit": ingredient.unit
+            })
     else:
-        scale_factor = False
+        for ingredient in request.ingredients:
+            updated_ingredients.append({
+                "name": ingredient.name,
+                "quantity": ingredient.quantity,
+                "unit": ingredient.unit
+            })
 
     # Was a new measurement system included?
     if request.system is True:
-
-#    for ingredient in request.ingredients:
-#        new_quantity = ingredient.quantity
-
+        if request.system == 'customary':
+            for ingredient in updated_ingredients:
+                ingredient["quantity"], ingredient["unit"] = conversion_to_customary(
+                    ingredient["unit"], ingredient["quantity"]
+                )
+        elif request.system == 'metric':
+            for ingredient in updated_ingredients:
+                ingredient["quantity"], ingredient["unit"] = conversion_to_metric(
+                    ingredient["unit"], ingredient["quantity"]
+                )
 
     return updated_ingredients
 
@@ -42,13 +60,13 @@ def conversion_to_customary(metric_unit, quantity):
     # kilogram to pounds
     elif metric_unit == 'kilograms' or metric_unit == 'kilogram':
         converted_quantity = round((quantity * 2.2046226218), 1)
-        converted_unit = 'pounds'
+        converted_unit = 'lbs'
 
 # LENGTH
     # centimeter to inch
     elif metric_unit == 'centimeters' or metric_unit == 'centimeter':
         converted_quantity = round((quantity * 0.3937007874), 2)
-        converted_unit = 'inch'
+        converted_unit = 'in'
 
 
 # TEMPERATURE
@@ -87,6 +105,81 @@ def conversion_to_customary(metric_unit, quantity):
         else:
             converted_quantity = round((quantity * 0.2641720524), 2)
             converted_unit = 'gallon'
+
+    # Error
+    else:
+        converted_quantity = 0
+        converted_unit = 0
+
+    return converted_quantity, converted_unit
+
+
+def conversion_to_metric(customary_unit, quantity):
+# WEIGHT
+    # ounces to grams
+    if (customary_unit == 'ounces' or customary_unit == 'ounce' or
+            customary_unit == 'oz'):
+        converted_quantity = round((quantity * 28.349523125), 2)
+        converted_unit = 'g'
+
+    # pounds to kilograms
+    elif customary_unit == 'pounds' or customary_unit == 'pound'\
+            or customary_unit == 'lbs':
+        converted_quantity = round((quantity * 0.45359237), 1)
+        converted_unit = 'kg'
+
+# LENGTH
+    # inch to centimeter
+    elif customary_unit == 'inches' or customary_unit == 'inch':
+        converted_quantity = round((quantity * 2.54), 2)
+        converted_unit = 'cm'
+
+
+# TEMPERATURE
+    # fahrenheit to celsius
+    elif customary_unit == 'fahrenheit' or customary_unit == '°F':
+        converted_quantity = round(((quantity - 32) * (5/9)), 1)
+        converted_unit = '°C'
+
+# VOLUME
+    # tsp to milliliter
+    elif customary_unit in ('tsp', 'teaspoon', 'teaspoons'):
+        converted_quantity = round(quantity * 4.9289215937, 2)
+        converted_unit = 'mL'
+
+    # Tbsp to milliliter
+    elif customary_unit in ('Tbsp', 'tablespoon', 'tablespoons'):
+        converted_quantity = round(quantity * 14.786764781, 2)
+        converted_unit = 'mL'
+
+    # Fluid ounce to milliliter
+    elif customary_unit in ('fl oz', 'fluid ounce', 'fluid ounces'):
+        converted_quantity = round(quantity * 29.573529562, 2)
+        converted_unit = 'mL'
+
+    # Cup to milliliter
+    elif customary_unit in ('cup', 'cups'):
+        converted_quantity = round(quantity * 236.5882365, 2)
+        converted_unit = 'mL'
+
+    # Pint to liter
+    elif customary_unit in ('pint', 'pints', 'p'):
+        if quantity < 2.1133764189:
+            converted_quantity = round(quantity * 473.176473, 2)
+            converted_unit = 'mL'
+        else:
+            converted_quantity = round(quantity * 0.473176473, 2)
+            converted_unit = 'L'
+
+    # Quart to liter
+    elif customary_unit in ('quart', 'quarts', 'qt'):
+        converted_quantity = round(quantity * 0.946352946, 2)
+        converted_unit = 'L'
+
+    # Gallon to liter
+    elif customary_unit in ('gallon', 'gallons'):
+        converted_quantity = round(quantity * 3.785411784, 2)
+        converted_unit = 'L'
 
     # Error
     else:
