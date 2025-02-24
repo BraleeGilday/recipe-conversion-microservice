@@ -2,10 +2,11 @@ import requests
 import json
 
 url = 'http://127.0.0.1:8000'
+headers = {"Content-Type": "application/json"}
 
 
 def send_post_request(json_request):
-    response = requests.post(url+'/conversion', json=json_request)
+    response = requests.post(url+'/conversion', json=json_request, headers=headers)
 
     # Check if the request was successful and print the response
     if response.status_code == 200:

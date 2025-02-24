@@ -37,11 +37,11 @@ def test_conversion_system_up_mixed():
             "ingredients": [
                 {"name": "frozen pound cake", "quantity": 1, "unit": "package"},
                 {"name": "sugar", "quantity": 2, "unit": "cup"},
-                {"name": "boiling water", "quantity": 3/4, "unit": "cup"},
-                {"name": "cold water", "quantity": 1/4, "unit": "cup"},
+                {"name": "boiling water", "quantity": 3 / 4, "unit": "cup"},
+                {"name": "cold water", "quantity": 1 / 4, "unit": "cup"},
                 {"name": "semi-sweet chocolate", "quantity": 1, "unit": "ounce"},
                 {"name": "Thawed Cool Whip", "quantity": 2, "unit": "cups"},
-                {"name": "Cherry Pie Filling", "quantity": 1 + 1/2, "unit": "cups"},
+                {"name": "Cherry Pie Filling", "quantity": 1 + 1 / 2, "unit": "cups"},
             ],
             "serving_size": 3
         }
@@ -104,11 +104,11 @@ def test_conversion_system_2():
             "ingredients": [
                 {"name": "frozen pound cake", "quantity": 1, "unit": "package"},
                 {"name": "sugar", "quantity": 2, "unit": "cup"},
-                {"name": "boiling water", "quantity": 3/4, "unit": "cup"},
-                {"name": "cold water", "quantity": 1/4, "unit": "cup"},
+                {"name": "boiling water", "quantity": 3 / 4, "unit": "cup"},
+                {"name": "cold water", "quantity": 1 / 4, "unit": "cup"},
                 {"name": "semi-sweet chocolate", "quantity": 1, "unit": "ounce"},
                 {"name": "Thawed Cool Whip", "quantity": 2, "unit": "cups"},
-                {"name": "Cherry Pie Filling", "quantity": 1 + 1/2, "unit": "cups"},
+                {"name": "Cherry Pie Filling", "quantity": 1 + 1 / 2, "unit": "cups"},
             ],
             "conversion_system": "metric"
         }
@@ -133,11 +133,11 @@ def test_conversion_both_1():
             "ingredients": [
                 {"name": "frozen pound cake", "quantity": 1, "unit": "package"},
                 {"name": "sugar", "quantity": 2, "unit": "cup"},
-                {"name": "boiling water", "quantity": 3/4, "unit": "cup"},
-                {"name": "cold water", "quantity": 1/4, "unit": "cup"},
+                {"name": "boiling water", "quantity": 3 / 4, "unit": "cup"},
+                {"name": "cold water", "quantity": 1 / 4, "unit": "cup"},
                 {"name": "semi-sweet chocolate", "quantity": 1, "unit": "ounce"},
                 {"name": "Thawed Cool Whip", "quantity": 2, "unit": "cups"},
-                {"name": "Cherry Pie Filling", "quantity": 1 + 1/2, "unit": "cups"},
+                {"name": "Cherry Pie Filling", "quantity": 1 + 1 / 2, "unit": "cups"},
             ],
             "serving_size": 2,
             "conversion_system": "metric"
@@ -156,7 +156,44 @@ def test_conversion_both_1():
 
 
 # Missing required fields
+def test_conversion_missing_quantity():
+    response = client.post(
+        "/conversion",
+        json={
+            "ingredients": [
+                {"name": "flour", "unit": "grams"},
+                {"name": "sugar", "quantity": 150, "unit": "grams"}
+            ],
+            "serving_size": 2
+        }
+    )
+    assert response.status_code == 422
+    assert response.json() == {'detail': [{'input': {'name': 'flour', 'unit': 'grams'},
+                                           'loc': ['body', 'ingredients', 0, 'quantity'],
+                                           'msg': 'Field required',
+                                           'type': 'missing'}
+                                          ]
+                               }
+
 
 # Invalid data types
+def test_conversion_invalid_type():
+    response = client.post(
+        "/conversion",
+        json={
+            "ingredients": [
+                {"name": "flour", "quantity": "five", "unit": "grams"},
+                {"name": "sugar", "quantity": 150, "unit": "grams"}
+            ],
+            "serving_size": 2
+        }
+    )
+    assert response.status_code == 422
+    assert response.json() == {'detail': [{'input': 'five',
+                                           'loc': ['body', 'ingredients', 0, 'quantity'],
+                                           'msg': 'Input should be a valid number, unable to parse string as '
+                                                  'a number',
+                                           'type': 'float_parsing'}]}
 
-# Negative or zero quantities
+
+
