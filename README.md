@@ -31,9 +31,31 @@ It allows users to:
      
 ## Communication Contract
 ### A. How to programmatically REQUEST data from the microservice:
+Example Call:
+
+      import requests
+  
+      url = 'http://127.0.0.1:8000'
+      headers = {"Content-Type": "application/json"}
     
-    Example Call:
-    
+      data = {
+        "ingredients": [
+            {"name": "flour", "quantity": 2, "unit": "cup"},
+            {"name": "sugar", "quantity": 4, "unit": "tablespoon"},
+            {"name": "cherry pie filling", "quantity": 1, "unit": "package"},
+        ],
+        "serving_size": 2,                   # (Optional) That is, scale the recipe by 2. 
+        "conversion_system": "customary"     # (Optional) or "metric", based on user's choice
+      }
+
+      # Send the POST request
+      response = requests.post(url, json=data, headers=headers)
+
+      # Check if the request was successful
+      if response.status_code == 200:
+         print(response.json()) 
+      else:
+         print(f"Error: {response.status_code}")
 
 ### B. How to programmatically RECEIVE data from the microservice:
 
