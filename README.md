@@ -9,25 +9,29 @@ It allows users to:
 ## Installation
 1. Setup Python Environment
    - Clone the repository:
-        git clone <repo_url>
+     ```
+        git clone https://github.com/BraleeGilday/recipe-conversion-microservice.git
         cd recipe-conversion-microservice
+     ```
 
    - Create and activate virtual environment:
      - Windows: 
+        ```
         python -m venv venv
         venv\Scripts\activate
-     - Mac/Linux: 
+        ```
+     - Mac/Linux:
+       ```
         python -m venv venv
         source venv/bin/activate
-
-   - Install dependencies:
-        pip install -r requirements.txt
+       ```
+   - Install dependencies: `pip install -r requirements.txt`
 
 2. Run the Microservice
    - Start the FastAPI server:
-        uvicorn app.main:api --reload
-     - The microservice will now be running at:
-        http://127.0.0.1:8080
+        `uvicorn app.main:api --reload`
+   - The microservice will now be running at:
+        `http://127.0.0.1:8080`
      
 ## Communication Contract
 ### A. How to programmatically REQUEST data from the microservice:
