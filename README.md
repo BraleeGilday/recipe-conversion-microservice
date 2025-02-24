@@ -90,3 +90,16 @@ Example Call:
          print(f"Error: {response.status_code}")
 
 ### C. UML Sequence diagram: 
+
+    sequenceDiagram
+        participant Client
+        participant FastAPI_Microservice
+        participant process_conversion
+    
+        Client->>FastAPI_Microservice: POST /conversion (JSON data)
+        FastAPI_Microservice->>FastAPI_Microservice: Validate request
+        FastAPI_Microservice->>process_conversion: Call process_conversion(request)
+        process_conversion->>process_conversion: Scale ingredients (if serving_size provided)
+        process_conversion->>process_conversion: Convert units (if conversion_system provided)
+        process_conversion-->>FastAPI_Microservice: Return updated ingredients
+        FastAPI_Microservice-->>Client: Send JSON Response
