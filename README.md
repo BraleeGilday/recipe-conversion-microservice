@@ -35,11 +35,39 @@ It allows users to:
      
 ## Communication Contract
 ### A. How to programmatically REQUEST data from the microservice:
+The microservice accepts POST requests with JSON data. The specifications are as follows:
+- Endpoint: `127.0.0.1:8000/conversion`
+- Method: POST
+- Headers: 
+  - Content-Type: application/json
+  
+- Request Body Format: JSON
+
+Example HTTP Request (raw format): 
+
+    POST /conversion HTTP/1.1
+    Host: 127.0.0.1:8000
+    Content-Type: application/json
+    
+    {
+      "ingredients": [
+        {"name": "flour", "quantity": 2, "unit": "cup"},
+        {"name": "sugar", "quantity": 4, "unit": "tablespoon"},
+        {"name": "cherry pie filling", "quantity": 1, "unit": "package"}
+      ],
+      "serving_size": 2,
+      "conversion_system": "customary"
+    }
+
+### B. How to programmatically RECEIVE data from the microservice:
+Once you've made the request, the microservice will respond with data in JSON format. 
+To receive and process this data, you need to check the response status and then parse the response.
+
 Example Call:
 
       import requests
   
-      url = 'http://127.0.0.1:8000'
+      url = 'http://127.0.0.1:8000/conversion'
       headers = {"Content-Type": "application/json"}
     
       data = {
@@ -48,8 +76,8 @@ Example Call:
             {"name": "sugar", "quantity": 4, "unit": "tablespoon"},
             {"name": "cherry pie filling", "quantity": 1, "unit": "package"},
         ],
-        "serving_size": 2,                   # (Optional) That is, scale the recipe by 2. 
-        "conversion_system": "customary"     # (Optional) or "metric", based on user's choice
+        "serving_size": 2,                   #(Optional) That is, scale the recipe by 2. 
+        "conversion_system": "customary"     #(Optional) or "metric", based on user's choice
       }
 
       # Send the POST request
@@ -60,10 +88,5 @@ Example Call:
          print(response.json()) 
       else:
          print(f"Error: {response.status_code}")
-
-### B. How to programmatically RECEIVE data from the microservice:
-
-
-    Example Call:
 
 ### C. UML Sequence diagram: 
