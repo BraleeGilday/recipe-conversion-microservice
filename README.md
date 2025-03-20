@@ -6,6 +6,9 @@ It allows users to:
 - Convert ingredient units between metric and customary systems.
 - Perform both operations in a single request.
 
+## Video Demo
+Watch the demo here: [YouTube Video](https://www.youtube.com/watch?v=2qR6cAARE7A)
+
 ## Installation
 1. Setup Python Environment
    - Clone the repository:
